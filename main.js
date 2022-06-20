@@ -104,9 +104,11 @@ async function loadHuts(url) {
     let response = await fetch(url);
     let geojson = await response.json(); 
     console.log(geojson);
-    let overlay = L.featureGroup();
+    let overlay = L.markerClusterGroup();
     layerControl.addOverlay(overlay,"Almen");
     overlay.addTo(map);
+    
+    // let overlay = L.MarkerClusterGroup();
 
     L.geoJSON(geojson,{
         pointToLayer: function(geoJsonPoint,latlng){
@@ -123,7 +125,6 @@ async function loadHuts(url) {
                 })
             }).bindPopup(popup); 
         }
-
     }).addTo(overlay);
 }
 loadHuts("https://opendata.arcgis.com/datasets/cd1b86196f2e4f14aeae79269433a499_0.geojson");
