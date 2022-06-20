@@ -50,6 +50,12 @@ let overlays = {
     humidity: L.featureGroup(),
     snowheight: L.featureGroup(),
     wind: L.featureGroup(),
+    gpx: L.featureGroup(),
+    
+};
+
+let overlays1 = {
+    gpx: L.featureGroup(),
 };
 
 // Karte initialisieren
@@ -71,8 +77,10 @@ let layerControl = L.control.layers({
     "Relative Luftfeuchtigkeit": overlays.humidity,
     "Schneehöhe": overlays.snowheight,
     "Wind": overlays.wind,
+    "Radrouten": overlays.gpx,
     //"Almen": overelays.almen
 }).addTo(map);
+
 
 // Layer control ausklappen
 layerControl.expand();
@@ -98,12 +106,13 @@ let getColor = function(value,ramp) {
     }
 };
 
+
 // Almen anzeigen 
 
 async function loadHuts(url) {
     let response = await fetch(url);
     let geojson = await response.json(); 
-    console.log(geojson);
+    // console.log(geojson);
     let overlay = L.markerClusterGroup();
     layerControl.addOverlay(overlay,"Almen");
     overlay.addTo(map);
@@ -112,7 +121,7 @@ async function loadHuts(url) {
 
     L.geoJSON(geojson,{
         pointToLayer: function(geoJsonPoint,latlng){
-            console.log(geoJsonPoint.properties.NAME);
+            // console.log(geoJsonPoint.properties.NAME);
             let popup = `
                 <strong>${geoJsonPoint.properties.NAME}</strong>
             `;
@@ -249,7 +258,7 @@ let drawWindspeed = function (geojson){
             );
 
             let deg = geoJsonPoint.properties.WR;
-            console.log(deg)
+            // console.log(deg)
 
         
 
@@ -286,7 +295,7 @@ let drawHumidity = function (geojson){
             );
 
             let deg = geoJsonPoint.properties.RH;
-            console.log(deg)
+            // console.log(deg)
 
         
 
@@ -316,3 +325,26 @@ async function loadData(url) {
     
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
+
+
+// GPX Track Layer implementieren
+let gpxTrack = new L.GPX("../data/Radtouren/10.gpx", {
+    async: true,
+    marker_options: {
+        startIconUrl:"icons/start.png",
+        endIconUrl: "icons/finish.png",
+        shadowUrl: null,
+        iconSize: [32, 37], 
+        iconAnchor: [16, 37],
+    },
+    polyline_options: {
+        color: "black",
+        dashArray:[2, 5],
+    },
+}).addTo(overlays.gpx); 
+
+gpxTrack.on("loaded", function(evt) {
+    // console.log("Loaded gpx event: ", evt);
+    let gpxLayer = evt.target;
+    map.fitBounds(gpxLayer.getBounds());
+});
