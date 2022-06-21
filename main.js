@@ -1,16 +1,4 @@
-/* Wetterstationen Tirol Beispiel */
-
-// let innsbruck = {
-//     lat: 47.267222,
-//     lng: 11.392778,
-//     zoom: 11
-// };
-
-// // WMTS Hintergrundlayer von https://lawinen.report (CC BY avalanche.report) als Startlayer
-// let startLayer = L.tileLayer("https://static.avalanche.report/tms/{z}/{x}/{y}.webp", {
-//     attribution: '&copy; <a href="https://lawinen.report">CC BY avalanche.report</a>'
-// })
-
+/* A TOUR A DAY */
 
 
 let innsbruck = {
@@ -68,8 +56,15 @@ let map = L.map("map", {
 
 // Layer control mit WMTS Hintergründen und Overlays
 let layerControl = L.control.layers({
-    "Grundkarte Tirol": startLayer,
-    "Esri World Imagery": L.tileLayer.provider("Esri.WorldImagery"),
+    // "Grundkarte Tirol": startLayer,
+    // "Esri World Imagery": L.tileLayer.provider("Esri.WorldImagery"),
+    "eGrundkarte Tirol Sommer": startLayer,
+    "eGrundkarte Tirol Winter": eGrundkarteTirol.winter,
+    "eGrundkarte Tirol Orthofoto": eGrundkarteTirol.ortho,
+    "eGrundkarte Tirol Orthofoto mit Beschriftung": L.layerGroup([
+        eGrundkarteTirol.ortho,
+        eGrundkarteTirol.nomenklatur,
+    ])
 }, {
     "Wetterstationen": overlays.stations,
     "Temperatur": overlays.temperature,
@@ -93,7 +88,7 @@ L.control.scale({
 L.control.fullscreen().addTo(map);
 
 // Diese Layer beim Laden anzeigen 
-overlays.temperature.addTo(map);
+overlays.gpx.addTo(map);
 
 // Farben nach Wert und Sc hwellen ermitteln
 let getColor = function(value,ramp) {
@@ -137,7 +132,7 @@ async function loadHuts(url) {
 }
 loadHuts("https://opendata.arcgis.com/datasets/cd1b86196f2e4f14aeae79269433a499_0.geojson");
 // Wetterstationslayer beim Laden anzeigen
-overlays.temperature.addTo(map);
+// overlays.temperature.addTo(map);
 
 
 // Station
@@ -325,22 +320,21 @@ async function loadData(url) {
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
 
+// Generate Random Number 
 let randomNumber = Math.floor(Math.random() * 760);
 console.log(randomNumber);
-
 let strRandom = randomNumber.toString();
 
 // Generate path with RandomNumber
 const path = "./data/Radtouren/"
 const endPath = ".gpx"
 const str1 = path.concat(strRandom)
-
 let str = str1 + endPath
 console.log(str)
 
 
 
-// GPX Track Layer implementieren
+// GPX Track Layer implementieren with random Track
 let gpxTrack = new L.GPX(str, {
     async: true,
     marker_options: {
@@ -357,9 +351,30 @@ let gpxTrack = new L.GPX(str, {
 }).addTo(overlays.gpx); 
 
 gpxTrack.on("loaded", function(evt) {
-    // console.log("Loaded gpx event: ", evt);
+    console.log("Loaded gpx event: ", evt);
     let gpxLayer = evt.target;
     map.fitBounds(gpxLayer.getBounds());
+
+    let popup = `
+            <h3>${gpxLayer.get_name()}</h3>
+            <ul>
+                <li> StreckenLänge: ${(gpxLayer.get_distance()/1000).toFixed()} km</li>
+                <li> tiefster Punkt: ${gpxLayer.get_elevation_min()} m</li>
+                <li> höchster Punkt: ${gpxLayer.get_elevation_max()} m</li>
+                <li> Hoehenmeter bergauf: ${gpxLayer.get_elevation_gain().toFixed()} m</li>
+                <li> Hoehenmeter bergab: ${gpxLayer.get_elevation_loss().toFixed()} m</li>`;
+    gpxLayer.bindPopup(popup);
 });
 
-//new L.GPX("../data/Radtouren/100.gpx"
+let elevationControl = L.control.elevation({
+    time: false,
+    elevationDiv: "#profile",
+    theme: "bike-tirol",
+    height: 200,
+    
+
+}).addTo(map);
+gpxTrack.on("addline", function(evt){
+    elevationControl.addData(evt.line);
+    
+});
