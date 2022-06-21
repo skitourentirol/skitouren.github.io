@@ -10,6 +10,9 @@
 // let startLayer = L.tileLayer("https://static.avalanche.report/tms/{z}/{x}/{y}.webp", {
 //     attribution: '&copy; <a href="https://lawinen.report">CC BY avalanche.report</a>'
 // })
+
+
+
 let innsbruck = {
     lat: 47.267222,
     lng: 11.392778,
@@ -52,10 +55,6 @@ let overlays = {
     wind: L.featureGroup(),
     gpx: L.featureGroup(),
     
-};
-
-let overlays1 = {
-    gpx: L.featureGroup(),
 };
 
 // Karte initialisieren
@@ -326,9 +325,23 @@ async function loadData(url) {
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
 
+let randomNumber = Math.floor(Math.random() * 760);
+console.log(randomNumber);
+
+let strRandom = randomNumber.toString();
+
+// Generate path with RandomNumber
+const path = "./data/Radtouren/"
+const endPath = ".gpx"
+const str1 = path.concat(strRandom)
+
+let str = str1 + endPath
+console.log(str)
+
+
 
 // GPX Track Layer implementieren
-let gpxTrack = new L.GPX("../data/Radtouren/10.gpx", {
+let gpxTrack = new L.GPX(str, {
     async: true,
     marker_options: {
         startIconUrl:"icons/start.png",
@@ -348,3 +361,5 @@ gpxTrack.on("loaded", function(evt) {
     let gpxLayer = evt.target;
     map.fitBounds(gpxLayer.getBounds());
 });
+
+//new L.GPX("../data/Radtouren/100.gpx"
