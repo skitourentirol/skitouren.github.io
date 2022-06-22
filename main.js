@@ -118,6 +118,7 @@ async function loadHuts(url) {
             // console.log(geoJsonPoint.properties.NAME);
             let popup = `
                 <strong>${geoJsonPoint.properties.NAME}</strong>
+                <br>
             `;
 
             return L.marker(latlng, {
