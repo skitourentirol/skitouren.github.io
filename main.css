@@ -4,7 +4,8 @@
 
 body {
     background: url("data/images/winter.jpg");
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Open Sans Condensed', sans-serif;
+    background-attachment: fixed;
     
 }
 
@@ -15,6 +16,30 @@ a {
 main {
     max-width: 1200px;
     margin: auto;
+}
+
+h1 {
+    color: rgb(255, 255, 255);
+
+    font-size: 80px;
+    font-weight: 700px;
+    line-height: 64px;
+    margin: 0 0 0;
+    padding: 40px 0px 50px 0px;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+
+h2 {
+    color: rgba(255, 255, 255, 1);
+    font-size: 50px;
+    font-weight: 600;
+    line-height: 64px;
+    margin: 0 0 0;
+    
+    text-align: left;
+    text-transform: uppercase;
 }
 
 header {
