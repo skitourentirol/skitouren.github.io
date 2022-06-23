@@ -33,7 +33,7 @@ const eGrundkarteTirol = {
 }
 
 // eGrundkarte Tirol Sommer als Startlayer
-let startLayer = eGrundkarteTirol.sommer;
+let startLayer = eGrundkarteTirol.winter;
 // Overlays Objekt für die thematischen Layer
 let overlays = {
     stations: L.featureGroup(),
@@ -58,7 +58,6 @@ let map = L.map("map", {
 let layerControl = L.control.layers({
     // "Grundkarte Tirol": startLayer,
     // "Esri World Imagery": L.tileLayer.provider("Esri.WorldImagery"),
-    "eGrundkarte Tirol Sommer": startLayer,
     "eGrundkarte Tirol Winter": eGrundkarteTirol.winter,
     "eGrundkarte Tirol Orthofoto": eGrundkarteTirol.ortho,
     "eGrundkarte Tirol Orthofoto mit Beschriftung": L.layerGroup([
@@ -71,7 +70,7 @@ let layerControl = L.control.layers({
     "Relative Luftfeuchtigkeit": overlays.humidity,
     "Schneehöhe": overlays.snowheight,
     "Wind": overlays.wind,
-    "Radrouten": overlays.gpx,
+    "Skitouren": overlays.gpx,
     //"Almen": overelays.almen
 }).addTo(map);
 
@@ -322,12 +321,12 @@ async function loadData(url) {
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
 
 // Generate Random Number 
-let randomNumber = Math.floor(Math.random() * 760);
+let randomNumber = Math.floor(Math.random() * 393);
 console.log(randomNumber);
 let strRandom = randomNumber.toString();
 
 // Generate path with RandomNumber
-const path = "./data/Radtouren/"
+const path = "./data/Skirouten/"
 const endPath = ".gpx"
 const str1 = path.concat(strRandom)
 let str = str1 + endPath
