@@ -134,6 +134,37 @@ loadHuts("https://opendata.arcgis.com/datasets/cd1b86196f2e4f14aeae79269433a499_
 // Wetterstationslayer beim Laden anzeigen
 // overlays.temperature.addTo(map);
 
+// Wildschutzzonen Anzeigen 
+
+async function loadZones(url) {
+    let response = await fetch(url);
+    let geojson = await response.json(); 
+    // console.log(geojson);
+    let overlay = L.featureGroup();
+    layerControl.addOverlay(overlay,"Wald- und Wildschutzzonen");
+    overlay.addTo(map);
+
+    L.geoJSON(geojson, {
+        style: function(feature) {
+            return {
+                color: "#F012BE",
+                weight: 1,
+                opacity: 0.1,
+                fillopacity: 0.1
+            }
+        }
+    }).bindPopup(function (layer) {
+        return `
+        <h4> Wald- und Wildschutzzone</h4>
+        <h3><a href="${layer.feature.properties.LINK}">Mehr Informationen</a></h3>
+        
+        `;
+        
+    }).addTo(overlay);
+}
+    
+loadZones("https://data-tiris.opendata.arcgis.com/datasets/tiris::wald-und-wildschutzzonen.geojson");
+
 
 // Station
 let drawStation = function(geojson) {
@@ -364,7 +395,7 @@ gpxTrack.on("loaded", function(evt) {
                 <li> Hoehenmeter bergauf: ${gpxLayer.get_elevation_gain().toFixed()} m</li>
                 <li> Hoehenmeter bergab: ${gpxLayer.get_elevation_loss().toFixed()} m</li>`;
     gpxLayer.bindPopup(popup);
-}).addTo(map);;
+}).addTo(map);
 
 // let elevationControl = L.control.elevation({
 //     time: false,
