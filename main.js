@@ -1,4 +1,4 @@
-/* A TOUR A DAY */
+/* A TOUR A DAY Winter*/
 
 
 let innsbruck = {
@@ -66,7 +66,6 @@ let layerControl = L.control.layers({
     "Schneehöhe": overlays.snowheight,
     "Wind": overlays.wind,
     "Skitouren": overlays.gpx,
-    //"Almen": overelays.almen
 }).addTo(map);
 
 
@@ -310,7 +309,7 @@ let drawHumidity = function (geojson) {
 async function loadData(url) {
     let response = await fetch(url);
     let geojson = await response.json();
-
+    geojson.innerHTML; 
     drawStation(geojson);
     drawTemperature(geojson);
     drawSnowheight(geojson);
