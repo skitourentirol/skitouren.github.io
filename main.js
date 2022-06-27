@@ -77,6 +77,11 @@ L.control.scale({
     imperial: false
 }).addTo(map);
 
+// Minimap
+var osm2 = new L.TileLayer("http://wmts.kartetirol.at/gdi_winter/{z}/{x}/{y}.png",{minZoom: 6, maxZoom:7, attribution: "https://www.data.gv.at/katalog/dataset/land-tirol_elektronischekartetirol"});
+var miniMap = new L.Control.MiniMap(osm2).addTo(map);
+
+
 // Fullscreen control
 L.control.fullscreen().addTo(map);
 
@@ -321,7 +326,6 @@ loadData("https://static.avalanche.report/weather_stations/stations.geojson");
 
 // Generate Random Number 
 let randomNumber = Math.floor(Math.random() * 393);
-console.log(randomNumber);
 let strRandom = randomNumber.toString();
 
 // Generate path with RandomNumber
@@ -329,8 +333,6 @@ const path = "./data/Skirouten/"
 const endPath = ".gpx"
 const str1 = path.concat(strRandom)
 let str = str1 + endPath
-console.log(str)
-
 
 // Implement GPX Track Layer with random Track and Popup
 let gpxTrack = new L.GPX(str, {
