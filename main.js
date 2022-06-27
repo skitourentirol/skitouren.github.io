@@ -51,8 +51,6 @@ let map = L.map("map", {
 
 // Layer control mit WMTS Hintergründen und Overlays
 let layerControl = L.control.layers({
-    // "Grundkarte Tirol": startLayer,
-    // "Esri World Imagery": L.tileLayer.provider("Esri.WorldImagery"),
     "eGrundkarte Tirol Winter": eGrundkarteTirol.winter,
     "eGrundkarte Tirol Orthofoto": eGrundkarteTirol.ortho,
     "eGrundkarte Tirol Orthofoto mit Beschriftung": L.layerGroup([
