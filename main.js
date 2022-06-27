@@ -95,7 +95,7 @@ let getColor = function (value, ramp) {
 };
 
 
-// Mountain Huts 
+// Almen 
 async function loadHuts(url) {
     let response = await fetch(url);
     let geojson = await response.json();
@@ -123,7 +123,7 @@ async function loadHuts(url) {
 loadHuts("https://opendata.arcgis.com/datasets/cd1b86196f2e4f14aeae79269433a499_0.geojson");
 
 
-// Wildschutzzonen Anzeigen 
+// Wildschutzzonen  
 async function loadZones(url) {
     let response = await fetch(url);
     let geojson = await response.json();
@@ -153,7 +153,7 @@ async function loadZones(url) {
 loadZones("https://data-tiris.opendata.arcgis.com/datasets/tiris::wald-und-wildschutzzonen.geojson");
 
 
-// Station
+// Stationen mit Popup 
 let drawStation = function (geojson) {
     // Wetterstationen mit Icons und Popups implementieren
     L.geoJson(geojson, {
