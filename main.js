@@ -9,11 +9,6 @@ let innsbruck = {
 
 // WMTS Hintergrundlayer der eGrundkarte Tirol definieren
 const eGrundkarteTirol = {
-    sommer: L.tileLayer(
-        "http://wmts.kartetirol.at/gdi_summer/{z}/{x}/{y}.png", {
-            attribution: `Datenquelle: <a href="https://www.data.gv.at/katalog/dataset/land-tirol_elektronischekartetirol">eGrundkarte Tirol</a>`
-        }
-    ),
     winter: L.tileLayer(
         "http://wmts.kartetirol.at/gdi_winter/{z}/{x}/{y}.png", {
             attribution: `Datenquelle: <a href="https://www.data.gv.at/katalog/dataset/land-tirol_elektronischekartetirol">eGrundkarte Tirol</a>`
@@ -42,7 +37,7 @@ let overlays = {
     snowheight: L.featureGroup(),
     wind: L.featureGroup(),
     gpx: L.featureGroup(),
-    
+
 };
 
 // Karte initialisieren
@@ -89,32 +84,27 @@ L.control.fullscreen().addTo(map);
 // Diese Layer beim Laden anzeigen 
 overlays.gpx.addTo(map);
 
-// Farben nach Wert und Sc hwellen ermitteln
-let getColor = function(value,ramp) {
+// Farben nach Wert und Schwellen ermitteln
+let getColor = function (value, ramp) {
     //console.log(value,ramp);
     for (let rule of ramp) {
         //console.log(rule)
         if (value >= rule.min && value < rule.max)
-        return rule.color; 
+            return rule.color;
     }
 };
 
 
-// Almen anzeigen 
-
+// Mountain Huts 
 async function loadHuts(url) {
     let response = await fetch(url);
-    let geojson = await response.json(); 
-    // console.log(geojson);
+    let geojson = await response.json();
     let overlay = L.markerClusterGroup();
-    layerControl.addOverlay(overlay,"Almen");
+    layerControl.addOverlay(overlay, "Almen");
     overlay.addTo(map);
-    
-    // let overlay = L.MarkerClusterGroup();
 
-    L.geoJSON(geojson,{
-        pointToLayer: function(geoJsonPoint,latlng){
-            // console.log(geoJsonPoint.properties.NAME);
+    L.geoJSON(geojson, {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.NAME}</strong>
                 <br>
@@ -123,29 +113,27 @@ async function loadHuts(url) {
             return L.marker(latlng, {
                 icon: L.icon({
                     iconUrl: "icons/almen.png",
-                    iconAnchor: [16,37],
-                    popupAnchor: [0,-37]
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -37]
                 })
-            }).bindPopup(popup); 
+            }).bindPopup(popup);
         }
     }).addTo(overlay);
 }
 loadHuts("https://opendata.arcgis.com/datasets/cd1b86196f2e4f14aeae79269433a499_0.geojson");
-// Wetterstationslayer beim Laden anzeigen
-// overlays.temperature.addTo(map);
+
 
 // Wildschutzzonen Anzeigen 
-
 async function loadZones(url) {
     let response = await fetch(url);
-    let geojson = await response.json(); 
+    let geojson = await response.json();
     // console.log(geojson);
     let overlay = L.featureGroup();
-    layerControl.addOverlay(overlay,"Wald- und Wildschutzzonen");
+    layerControl.addOverlay(overlay, "Wald- und Wildschutzzonen");
     overlay.addTo(map);
 
     L.geoJSON(geojson, {
-        style: function(feature) {
+        style: function (feature) {
             return {
                 color: "#F012BE",
                 weight: 1,
@@ -159,20 +147,17 @@ async function loadZones(url) {
         <h3><a href="${layer.feature.properties.LINK}">Mehr Informationen</a></h3>
         
         `;
-        
+
     }).addTo(overlay);
 }
-    
 loadZones("https://data-tiris.opendata.arcgis.com/datasets/tiris::wald-und-wildschutzzonen.geojson");
 
 
 // Station
-let drawStation = function(geojson) {
+let drawStation = function (geojson) {
     // Wetterstationen mit Icons und Popups implementieren
     L.geoJson(geojson, {
-        pointToLayer: function(geoJsonPoint, latlng) {
-            // L.marker(latlng).addTo(map)
-            // console.log(geoJsonPoint.geometry.coordinates[2]);
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}<br></strong>
                 Lufttemperatur (°C): ${geoJsonPoint.properties.LT}<br>
@@ -185,7 +170,7 @@ let drawStation = function(geojson) {
             `;
             return L.marker(latlng, {
                 icon: L.icon({
-                    iconUrl: `/icons/wifi.png`,
+                    iconUrl: `/icons/station.png`,
                     iconAnchor: [16, 37],
                     popupAnchor: [0, -37]
                 })
@@ -197,19 +182,17 @@ let drawStation = function(geojson) {
 
 
 
-//Temperatur 
-let drawTemperature = function(geojson) {
+//Temperature 
+let drawTemperature = function (geojson) {
     // Wetterstationen mit Icons und Popups implementieren
     L.geoJson(geojson, {
-        filter: function(geoJsonPoint){
-            if (geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50){
+        filter: function (geoJsonPoint) {
+            if (geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50) {
                 return true;
             }
 
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
-            // L.marker(latlng).addTo(map)
-            // console.log(geoJsonPoint.geometry.coordinates[2]);
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}</strong><br>
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
@@ -218,12 +201,10 @@ let drawTemperature = function(geojson) {
                 geoJsonPoint.properties.LT,
                 COLORS.temperature
             );
-        
-
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html:`<span style="background-color:${color}">${geoJsonPoint.properties.LT.toFixed(1)}</span>`
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.LT.toFixed(1)}</span>`
                 })
             }).bindPopup(popup);
         }
@@ -232,16 +213,15 @@ let drawTemperature = function(geojson) {
 }
 
 
-// Schneehöhen 
-let drawSnowheight = function (geojson){
+// Snowheight 
+let drawSnowheight = function (geojson) {
     L.geoJson(geojson, {
-        filter: function(geoJsonPoint){
-            if (geoJsonPoint.properties.HS >= 0 && geoJsonPoint.properties.HS < 1500){
+        filter: function (geoJsonPoint) {
+            if (geoJsonPoint.properties.HS >= 0 && geoJsonPoint.properties.HS < 1500) {
                 return true;
             }
-
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}</strong><br>
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
@@ -250,12 +230,10 @@ let drawSnowheight = function (geojson){
                 geoJsonPoint.properties.HS,
                 COLORS.snowheight
             );
-        
-
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html:`<span style="background-color:${color}">${geoJsonPoint.properties.HS.toFixed(0)}</span>`
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.HS.toFixed(0)}</span>`
                 })
             }).bindPopup(popup);
         }
@@ -263,16 +241,16 @@ let drawSnowheight = function (geojson){
 
 }
 
-// Windgeschwindigkeit
-let drawWindspeed = function (geojson){
+
+// Windspeed
+let drawWindspeed = function (geojson) {
     L.geoJson(geojson, {
-        filter: function(geoJsonPoint){
-            if (geoJsonPoint.properties.WG >= 0 && geoJsonPoint.properties.WG < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <= 360){
+        filter: function (geoJsonPoint) {
+            if (geoJsonPoint.properties.WG >= 0 && geoJsonPoint.properties.WG < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <= 360) {
                 return true;
             }
-
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}</strong><br>
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
@@ -283,14 +261,11 @@ let drawWindspeed = function (geojson){
             );
 
             let deg = geoJsonPoint.properties.WR;
-            // console.log(deg)
-
-        
 
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html:`<span style="background-color:${color};
+                    html: `<span style="background-color:${color};
                     transform: rotate(${deg}deg)"><i class="fa-solid fa-circle-arrow-up"></i>${geoJsonPoint.properties.WG.toFixed(0)}</span>`
                 })
             }).bindPopup(popup);
@@ -301,15 +276,14 @@ let drawWindspeed = function (geojson){
 
 
 // Relative Luftfeuchte
-let drawHumidity = function (geojson){
+let drawHumidity = function (geojson) {
     L.geoJson(geojson, {
-        filter: function(geoJsonPoint){
-            if (geoJsonPoint.properties.RH >= 0 && geoJsonPoint.properties.RH < 100){
+        filter: function (geoJsonPoint) {
+            if (geoJsonPoint.properties.RH >= 0 && geoJsonPoint.properties.RH < 100) {
                 return true;
             }
-
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 <strong>${geoJsonPoint.properties.name}</strong><br>
                 (${geoJsonPoint.geometry.coordinates[2]} m ü.d.M.)
@@ -318,16 +292,12 @@ let drawHumidity = function (geojson){
                 geoJsonPoint.properties.RH,
                 COLORS.humidity
             );
-
             let deg = geoJsonPoint.properties.RH;
-            // console.log(deg)
-
-        
 
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html:`<span style="background-color:${color}">${geoJsonPoint.properties.RH.toFixed(0)}</span>`
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.RH.toFixed(0)}</span>`
                 })
             }).bindPopup(popup);
         }
@@ -336,7 +306,7 @@ let drawHumidity = function (geojson){
 }
 
 
-// Wetterstationen
+// Weatherstations
 async function loadData(url) {
     let response = await fetch(url);
     let geojson = await response.json();
@@ -346,10 +316,9 @@ async function loadData(url) {
     drawSnowheight(geojson);
     drawWindspeed(geojson);
     drawHumidity(geojson);
-
-    
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
+
 
 // Generate Random Number 
 let randomNumber = Math.floor(Math.random() * 393);
@@ -364,24 +333,23 @@ let str = str1 + endPath
 console.log(str)
 
 
-
-// GPX Track Layer implementieren with random Track
+// Implement GPX Track Layer with random Track and Popup
 let gpxTrack = new L.GPX(str, {
     async: true,
     marker_options: {
-        startIconUrl:"icons/start.png",
+        startIconUrl: "icons/start.png",
         endIconUrl: "icons/finish.png",
         shadowUrl: null,
-        iconSize: [32, 37], 
+        iconSize: [32, 37],
         iconAnchor: [16, 37],
     },
     polyline_options: {
         color: "black",
-        dashArray:[2, 5],
+        dashArray: [2, 5],
     },
-}).addTo(overlays.gpx); 
+}).addTo(overlays.gpx);
 
-gpxTrack.on("loaded", function(evt) {
+gpxTrack.on("loaded", function (evt) {
     console.log("Loaded gpx event: ", evt);
     let gpxLayer = evt.target;
     map.fitBounds(gpxLayer.getBounds());
@@ -397,15 +365,17 @@ gpxTrack.on("loaded", function(evt) {
     gpxLayer.bindPopup(popup);
 }).addTo(map);
 
+
+// Possibility to get Elevation model if there is Data with Hight Information
 // let elevationControl = L.control.elevation({
 //     time: false,
 //     elevationDiv: "#profile",
 //     theme: "bike-tirol",
 //     height: 200,
-    
+
 
 // }).addTo(map);
 // gpxTrack.on("addline", function(evt){
 //     elevationControl.addData(evt.line);
-    
+
 // });
