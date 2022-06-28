@@ -1,4 +1,4 @@
-/* Stile für das Wetterstationen Tirol Beispiel */
+/* Stile für Winterkarte */
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital@0;1&family=Roboto:wght@300&display=swap');
 
@@ -9,9 +9,7 @@ body {
 
 }
 
-a {
-    color: black;
-}
+
 
 main {
     max-width: 1200px;
@@ -31,16 +29,7 @@ h1 {
 }
 
 
-h2 {
-    color: rgba(255, 255, 255, 1);
-    font-size: 50px;
-    font-weight: 600;
-    line-height: 64px;
-    margin: 0 0 0;
 
-    text-align: left;
-    text-transform: uppercase;
-}
 
 
 article {
@@ -58,12 +47,6 @@ article #map {
     width: 100%;
     height: 85vh;
     border: 1px solid gray;
-}
-
-footer {
-    font-family: "Roboto", sans-serif;
-    font-size: 0.9em;
-    margin-top: 0.5em;
 }
 
 footer nav {
