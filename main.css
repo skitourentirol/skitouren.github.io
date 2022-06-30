@@ -3,9 +3,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital@0;1&family=Roboto:wght@300&display=swap');
 
 body {
-    background: url("data/images/winter.jpg");
+    background: url("data/images/winter.jpg") no-repeat center fixed;
     font-family: 'Open Sans Condensed', sans-serif;
-    background-attachment: fixed;
+    background-size: cover;
 
 }
 
